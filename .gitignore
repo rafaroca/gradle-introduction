@@ -8,6 +8,7 @@
 *.so
 *.pyc
 *.min.css
+*.swp
 #*.min.js
 .sass-cache/*
 

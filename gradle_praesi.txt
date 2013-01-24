@@ -1,0 +1,45 @@
+Gradle Präsentation
+- Was ist gradle?
+---
+Tasks
+ eigene Tasks
+---
+Dependencies
+---
+Configurations
+--
+Source sets
+--
+Conventions
+ - directories
+ - files
+ - source sets
+ - system properties
+-- 
+Plugins
+  - java
+  - maven
+  - war
+  - scala
+--
+Multi Project builds: 
+ - allprojects
+ - subprojects
+ - project(':name') dependency
+--
+wahrscheinlich nicht:
+Groovy Basics
+  - Variablen
+  - Zuweisungen
+  - Closures
+  - Listen
+--
+Build Lifecycle, configuration phase, doFirst, doLast
+--
+Gradle Grundconfig
+ - daemon
+ - properties, system Properties
+--
+  Literatur
+  - Gradle DSL Doku
+  - Gradle Buch
