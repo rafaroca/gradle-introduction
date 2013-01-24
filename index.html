@@ -36,6 +36,22 @@ URL: https://code.google.com/p/io-2012-slides
     </hgroup>
   </slide>
 
+    <slide class="title-slide">
+    <hgroup>
+      <h2>What this talk is about</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>What is gradle?</li>
+        <li>Basic tasks</li>
+        <li>Dependencies</li>
+        <li>Multi project builds</li>
+        <li>Plugins (java, scala, idea, ...)</li>
+        <li>Literature</li>
+      </ul>
+    </article>
+  </slide>
+
   <slide>
     <hgroup>
       <h2>What is Gradle?</h2>
@@ -46,145 +62,192 @@ URL: https://code.google.com/p/io-2012-slides
 		  <li>Own DSL based on Groovy</li>
 		  <li>„build-by-convention“</li>
 		  <li>Plugin system (Java, Scala, Groovy, …)</li>
-		  <li>Third party plugins available (checkstyle, code coverage, …)</li>
+		  <li>Third party plugins available (scala, checkstyle, code coverage, packaging …)</li>
 		  <li>Integrates with Ant and Maven</li>
       </ul>
     </article>
   </slide>
 
   <slide>
+  <hgroup>
+    <h2>Hello World example</h2>
+  </hgroup>
+  <article>
+  <p>A gradle project consists of <b>tasks</b></p>
+
+  <pre class="prettyprint" data-lang="build.gradle">
+task hello << {
+  println 'Hello, World'
+}
+  </pre>
+  <p>Output:</p>
+  <pre class="prettyprint">
+[raffael@megaman]$ gradle hello
+:hello
+Hello, World
+
+BUILD SUCCESSFUL
+
+Total time: 3.057 secs
+  </pre>
+  </article>
+</slide>
+
+  <slide>
     <hgroup>
-      <h2>How to create your own tasks</h2>
+      <h2>Hello world contd.</h2>
     </hgroup>
-    <article></article>
+    <article class="smaller">
+    <p>Use <b>dependsOn</b> to declare dependent tasks</p>
+    <pre class="prettyprint" data-lang="build.gradle">
+task hello << {
+  println 'Hello, '
+}
+
+task world(dependsOn: hello) << {
+  println 'World'
+}
+  </pre>
+  <p>Output:</p>
+  <pre class="prettyprint">
+raffael@megaman$ gradle world
+:hello
+Hello, 
+:world
+World
+
+BUILD SUCCESSFUL
+
+Total time: 1.285 secs
+  </pre>
+</article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Build Lifecycle in Gradle</h2>
+    </hgroup>
+    <article class="smaller">
+    <p>Gradle splits its lifecycle into two phases (three to be über-correct):
+    <ul>
+      <li>Configuration phase</li>
+      <li>Execution phase</li>
+    </ul>
+    </p><p>
+    This can bite you when you depend on <b>files, generated in execution</b>.
+    </p><p>
+    See <a href="http://gradle.org/docs/current/userguide/build_lifecycle.html">Chapter&nbsp;49.&nbsp;The
+      Build Lifecycle</a> for more.
+    </p>
+    <pre class="prettyprint" data-lang="build.gradle">
+task bugs {
+    println "Preloading quotes."
+    message = "What's up, doc?"
+}
+bugs << {
+    println project.message
+}
+    </pre>
+    </article>
+
+  </slide>
+  <slide>
+    <hgroup>
+      <h2>Build lifecycle contd.</h2>
+    </hgroup>
+    <article><pre>
+raffael@megaman$ gradle bugs
+Preloading quotes.
+:bugs
+What's up, doc?
+
+BUILD SUCCESSFUL
+
+Total time: 1.754 secs
+</pre>
+    <p><ul>
+      <li>The &quot;&lt;&lt;&quot; is an alias for .doLast()</li>
+      <li>doLast (or &lt;&lt;) appends <b>actions</b> to a task</li>
+      <li>doFirst inserts actions at the front of action list (but after configuration)</li>
+    </article>
+  </slide> 
+
+  <slide>
+    <hgroup>
+      <h2>Multi project builds</h2>
+    </hgroup>
+    <article class="smaller">
+    <pre class="prettyprint" data-lang="settings.gradle">
+include 'bugs', 'duffy'
+    </pre>
+    <pre class="prettyprint" data-lang="build.gradle">
+allprojects {
+    task wave << {
+        println project.name + " waves at you"
+    }
+}
+subprojects {
+    task quote << {
+        <b>println project.name + " shouts out: " + project.quoteMessage</b>
+    }
+}
+    </pre>
+    <pre class="prettyprint" data-lang="bugs/build.gradle">
+project.ext {
+    <b>quoteMessage = "It's duck season!"</b>
+}
+    </pre>
+    <pre class="prettyprint" data-lang="duffy/build.gradle">
+project.ext {
+    <b>quoteMessage = "It's rabbit season!"</b>
+}
+    </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Multi project builds contd.</h2>
+    </hgroup>
+    <article>
+    <pre data-lang="output">
+raffael@megaman$ gradle quote
+:bugs:quote
+bugs shouts out: It's duck season!
+:duffy:quote
+duffy shouts out: It's rabbit season!
+
+BUILD SUCCESSFUL
+    </pre>
+    <pre data-lang="output">
+raffael@megaman$ gradle wave
+:wave
+edu-gradle waves at you
+:bugs:wave
+bugs waves at you
+:duffy:wave
+duffy waves at you
+
+BUILD SUCCESSFUL
+    </pre>
+    </article>
   </slide>
 
   <slide>
     <hgroup>
       <h2></h2>
     </hgroup>
-    <article></article>
+    <article>
+    <ul><li></li></ul>
+    </article>
   </slide>
 
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2></h2>
-    </hgroup>
-    <article></article>
-  </slide>
-  
   <slide>
     <hgroup>
       <h2>Resources</h2>
     </hgroup>
     <article>
         <ul>
-            <li>Official Gradle documentation: <a href="http://">Link</a></li>
             <li>Gradle User Guide <a href="http://gradle.org/docs/current/userguide/userguide.html">Link</a></li>
             <li>Gradle DSL: <a href="http://www.gradle.org/docs/current/dsl/index.html">Link</a></li>
             <li>Gradle resources (webinars): <a href="http://www.gradleware.com/resources">Link</a></li>
@@ -192,21 +255,7 @@ URL: https://code.google.com/p/io-2012-slides
   </slide>
 
   <slide class="backdrop"></slide>
-
 </slides>
-
-<script>
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
-_gaq.push(['_trackPageview']);
-
-(function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
-
 <!--[if IE]>
   <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
   <script>CFInstall.check({mode: 'overlay'});</script>
