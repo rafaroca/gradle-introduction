@@ -233,39 +233,148 @@ BUILD SUCCESSFUL
     </article>
   </slide>
 
+
+   <slide>
+    <hgroup>
+      <h2>Dependencies</h2>
+      <h3>Configure the dependencies on other projects</h3>
+    </hgroup>
+    <article class="smaller">
+    <p>Dependencies are declared for a certain <b>configuration</b>. The Java plugin defines these configurations:</p>
+    <ul>
+      <li>compile: needed while compiling the code</li>
+      <li>testCompile: only needed for testing</li>
+      <li>runtime: only needed while running</li>
+    </ul>
+
+<pre class="prettyprint fade" data-lang="local files">
+dependencies {
+  runtime files('libs/a.jar', 'libs/b.jar')
+  runtime fileTree(dir: 'libs', includes: ['*.jar'])
+}</pre>
+<pre class="prettyprint fade" data-lang="maven artifacts">
+dependencies {
+  compile 'org.springframework:spring-webmvc:3.0.0.RELEASE'
+  runtime group: 'org.springframework', name: 'spring-core', version: '2.5'
+  testCompile 'junit:junit:4.7'
+}</pre>
+<a href="http://www.gradle.org/docs/current/dsl/org.gradle.api.Project.html#N12D37">Properties of the "Project" Object</a>
+
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Dependencies contd.</h2>
+    </hgroup>
+    <article>
+    <p>We group the versions of our dependencies in a special <b>gradle.properties</b> file. This is interpreted by gradle by default.</p>
+     <pre class="prettyprint" data-lang="build.gradle">
+    compile(
+        'org.slf4j:slf4j-api:' + slf4jVersion,
+        'com.smarchive:document-api:' + documentServiceVersion,
+        'com.smarchive:document-client:' + documentServiceVersion
+    )
+    </pre>
+    <pre class="prettyprint" data-lang="gradle.properties">
+    slf4jVersion=1.7.2
+    documentServiceVersion=3.0.114
+    </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Configurations</h2>
+    </hgroup>
+    <article>
+   A Configuration represents a group of artifacts and their dependencies. 
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Repositories</h2>
+    </hgroup>
+    <article>
+    <p>Gradle supports maven repositories. At smarchive, we deployed our own caching Nexus.</p>
+    <pre class="prettyprint">
+repositories {
+    maven { url 'https://repo.i.smarchive.de/nexus/content/groups/public' }
+    mavenCentral()
+}
+  </pre>
+    <p>So we can use </p>
+    <pre>compile 'org.slf4j:slf4j-api:' + slf4jVersion</pre>
+    <p>as well as</p>
+    <pre>compile 'com.smarchive:document-client:' + documentServiceVersion</pre>
+    </article>
+  </slide>
+
   <slide>
     <hgroup>
       <h2>The Java plugin</h2>
     </hgroup>
     <article>
     <ul>
-    <li>Comes with a lot of predefined tasks</li>
-    <li>compileJava, compileTestJava, test, jar, ...</li>
-    <li>Adds <b>lifecycle</b> tasks</li>
+    <li>Comes with a lot of predefined dependency configurations and tasks</li>
     <ul>
-      <li>assemble, check, <b>build</b></li>
+      <li>compileJava, compileTestJava, test, jar, ...</li>
+      <li>These task depend on each other and form a <b>lifecycle</b> </li>
     </ul>
   </ul>
 <a href="http://www.gradle.org/docs/current/userguide/java_plugin.html">Chapter&nbsp;23.&nbsp;The Java Plugin</a>
-
+<img src="images/javaPluginTasks.png" alt="" width="1050" height="329" />
     </article>
   </slide>
 
    <slide>
     <hgroup>
-      <h2></h2>
+      <h2>Java plugin default project layout</h2>
+      <h3>Like you know it from maven :)</h3>
     </hgroup>
     <article>
-    <ul><li></li></ul>
-    </article>
+    <table>
+      <tr>
+        <th>Directory</th>
+        <th>Meaning</th></tr>
+      <tr>
+      <td>
+            <code class="filename">src/main/java</code>
+        </td>
+        <td>Production Java source</td>
+    </tr><tr>
+        <td>
+            <code class="filename">src/main/resources</code>
+        </td>
+        <td>Production resources</td>
+    </tr><tr>
+        <td>
+            <code class="filename">src/test/java</code>
+        </td>
+        <td>Test Java source</td>
+    </tr><tr>
+        <td>
+            <code class="filename">src/test/resources</code>
+        </td>
+        <td>Test resources</td>
+    </tr></tbody></table>
+  </article>
   </slide>
 
    <slide>
     <hgroup>
-      <h2></h2>
+      <h2>Lots more to explore</h2>
     </hgroup>
     <article>
-    <ul><li></li></ul>
+    <ul>
+      <li>Ant support</li>
+      <li>Plugins: Scala, idea, eclipse, checkstyle, findbugs, coverage</li>
+      <li>Gradle daemon</li>
+      <li>Publishing to maven repositories</li>
+      <li>Signing archives with keys</li>
+      <li>Gradle Wrapper</li>
+    </ul>
     </article>
   </slide>
 
