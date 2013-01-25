@@ -240,7 +240,7 @@ BUILD SUCCESSFUL
       <h3>Configure the dependencies on other projects</h3>
     </hgroup>
     <article class="smaller">
-    <p>Dependencies are declared for a certain <b>configuration</b>. The Java plugin defines these configurations:</p>
+    <p>Dependencies are declared for a certain <b>configuration</b>. A configuration represents a group of artifacts and their dependencies. The Java plugin defines these configurations:</p>
     <ul>
       <li>compile: needed while compiling the code</li>
       <li>testCompile: only needed for testing</li>
@@ -257,6 +257,7 @@ dependencies {
   compile 'org.springframework:spring-webmvc:3.0.0.RELEASE'
   runtime group: 'org.springframework', name: 'spring-core', version: '2.5'
   testCompile 'junit:junit:4.7'
+  compile project(':document-api')
 }</pre>
 <a href="http://www.gradle.org/docs/current/dsl/org.gradle.api.Project.html#N12D37">Properties of the "Project" Object</a>
 
@@ -283,16 +284,7 @@ dependencies {
     </article>
   </slide>
 
-  <slide>
-    <hgroup>
-      <h2>Configurations</h2>
-    </hgroup>
-    <article>
-   A Configuration represents a group of artifacts and their dependencies. 
-    </article>
-  </slide>
-
-  <slide>
+   <slide>
     <hgroup>
       <h2>Repositories</h2>
     </hgroup>

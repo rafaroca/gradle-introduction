@@ -127,4 +127,4 @@ Presenter mode is sticky, so refreshing the page will persist your settings.
 
 ---
 
-That's all she wrote!
+= Introduction talk to gradle
